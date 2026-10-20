@@ -6,7 +6,10 @@ import axios from 'axios';
 const getApiBase = () => {
   if (process.env.REACT_APP_API_BASE) return process.env.REACT_APP_API_BASE;
   const host = window.location.hostname || '127.0.0.1';
-  return `http://${host}:8000/api`;
+  if (host === 'localhost' || host === '127.0.0.1' || host.startsWith('192.168.')) {
+    return `http://${host}:8000/api`;
+  }
+  return `/api`;
 };
 const API_BASE = getApiBase();
 
@@ -499,15 +502,23 @@ function MainPortal() {
     }, 200);
   };
 
-  // Media Preview Component with LAN URL Resolution
+  // Media Preview Component with LAN & Cloud URL Resolution
   const getFullMediaUrl = (url) => {
     if (!url) return null;
     const host = window.location.hostname || '127.0.0.1';
-    if (url.startsWith('/uploads/')) {
-      return `http://${host}:8000${url}`;
+    const isLocal = host === 'localhost' || host === '127.0.0.1' || host.startsWith('192.168.');
+    if (isLocal) {
+      if (url.startsWith('/uploads/')) {
+        return `http://${host}:8000${url}`;
+      }
+      if (url.includes(':8000/uploads/')) {
+        return url.replace(/https?:\/\/[^/]+:8000/, `http://${host}:8000`);
+      }
+      return url;
     }
-    if (url.includes(':8000/uploads/')) {
-      return url.replace(/https?:\/\/[^/]+:8000/, `http://${host}:8000`);
+    // Cloud / Vercel: serve relative path over HTTPS
+    if (url.includes('/uploads/')) {
+      return url.substring(url.indexOf('/uploads/'));
     }
     return url;
   };

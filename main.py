@@ -52,7 +52,11 @@ DESKTOP_API_KEY = os.getenv("DESKTOP_API_KEY", "")
 ENVIRONMENT = os.getenv("ENVIRONMENT", "development")
 
 # File Upload Rules
-UPLOAD_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "uploads"))
+IS_VERCEL = bool(os.getenv("VERCEL"))
+if IS_VERCEL:
+    UPLOAD_DIR = "/tmp/uploads"
+else:
+    UPLOAD_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "uploads"))
 os.makedirs(UPLOAD_DIR, exist_ok=True)
 MAX_UPLOAD_SIZE_MB = int(os.getenv("MAX_UPLOAD_SIZE_MB", "10"))
 MAX_UPLOAD_SIZE_BYTES = MAX_UPLOAD_SIZE_MB * 1024 * 1024
@@ -118,27 +122,31 @@ async def add_security_headers(request: Request, call_next):
     return response
 
 # 4. CORS Configuration
-# Supports localhost, LAN access, and custom configured domains
-allowed_origins_env = os.getenv("ALLOWED_ORIGINS", "")
-allowed_origins = [origin.strip() for origin in allowed_origins_env.split(",") if origin.strip()]
-if not allowed_origins:
-    allowed_origins = [
-        "http://localhost:3000",
-        "http://127.0.0.1:3000"
-    ]
-
+# Supports localhost, LAN access, and cloud domains seamlessly
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=allowed_origins if ENVIRONMENT == "production" else ["*"],
-    allow_credentials=True if ENVIRONMENT == "production" else False,
-    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allow_origins=["*"],
+    allow_credentials=False,
+    allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# Health Check Endpoints
+@app.get("/")
+@app.get("/api")
+@app.get("/api/health")
+def health_check():
+    return {
+        "status": "online",
+        "service": "Ministry IT Complaint API",
+        "database": DB_CONFIG.get("database"),
+        "timestamp": datetime.now(timezone.utc).isoformat()
+    }
 
 # Mount Static Uploads Folder securely
 app.mount("/uploads", StaticFiles(directory=UPLOAD_DIR), name="uploads")
 
-# 5. Database Connection Pool with Auto-Reconnect
+# 5. Database Connection Pool with Auto-Reconnect (Resilient for Serverless)
 db_pool = None
 
 def get_db_pool():
@@ -147,7 +155,7 @@ def get_db_pool():
         try:
             db_pool = mysql.connector.pooling.MySQLConnectionPool(
                 pool_name="secure_pool",
-                pool_size=10,
+                pool_size=5,
                 pool_reset_session=True,
                 **DB_CONFIG
             )
@@ -156,22 +164,31 @@ def get_db_pool():
             logger.error(f"Database Connection Error: {err}")
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                detail="Database service unavailable. Please check MySQL server."
+                detail=f"Database service unavailable: {str(err)}"
             )
     return db_pool
 
 def get_db_connection():
-    pool = get_db_pool()
+    global db_pool
     try:
+        pool = get_db_pool()
         conn = pool.get_connection()
-        conn.ping(reconnect=True, attempts=3, delay=1)
+        if not conn.is_connected():
+            conn.reconnect(attempts=3, delay=1)
         return conn
-    except mysql.connector.Error as err:
-        logger.error(f"Failed to acquire database connection: {err}")
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="Database connection error. Please try again later."
-        )
+    except Exception as err:
+        logger.warning(f"Connection pool error, resetting pool: {err}")
+        try:
+            db_pool = None
+            pool = get_db_pool()
+            conn = pool.get_connection()
+            return conn
+        except Exception as retry_err:
+            logger.error(f"Failed to acquire database connection after reset: {retry_err}")
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail=f"Database connection error: {str(retry_err)}"
+            )
 
 # 6. Password Utilities (Bcrypt)
 def verify_password(plain_password: str, stored_password: str, user_id: Optional[int] = None) -> bool:
