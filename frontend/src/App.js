@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { BrowserRouter, useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
+import './App.css';
 
 // Dynamic Environment & LAN-aware API Base URL configuration
 const getApiBase = () => {
@@ -614,7 +615,7 @@ function MainPortal() {
   // Modern Enterprise Auth & Welcome Portal View
   if (!user) {
     return (
-      <div style={{
+      <div className="auth-wrapper" style={{
         minHeight: '100vh',
         backgroundColor: '#071629',
         backgroundImage: 'radial-gradient(at 0% 0%, rgba(37, 99, 235, 0.25) 0px, transparent 50%), radial-gradient(at 100% 100%, rgba(217, 119, 6, 0.18) 0px, transparent 50%)',
@@ -626,7 +627,7 @@ function MainPortal() {
       }}>
         
         {/* Top Official Header Bar */}
-        <header style={{
+        <header className="auth-header" style={{
           borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
           padding: '16px 36px',
           display: 'flex',
@@ -652,7 +653,7 @@ function MainPortal() {
               MF
             </div>
             <div>
-              <div style={{ fontSize: '13px', fontWeight: '800', letterSpacing: '1px', textTransform: 'uppercase', color: '#FCD34D' }}>
+              <div className="header-brand-title" style={{ fontSize: '13px', fontWeight: '800', letterSpacing: '1px', textTransform: 'uppercase', color: '#FCD34D' }}>
                 Ministry of Fisheries & Aquatic Resources
               </div>
               <div style={{ fontSize: '12px', color: '#94A3B8', fontWeight: '500' }}>
@@ -685,7 +686,7 @@ function MainPortal() {
         </header>
 
         {/* Main Split Section (Hero + Auth Card) */}
-        <main style={{
+        <main className="auth-main-grid" style={{
           flex: 1,
           maxWidth: '1240px',
           margin: '0 auto',
@@ -698,7 +699,7 @@ function MainPortal() {
         }}>
           
           {/* Left Hero Column */}
-          <div>
+          <div className="auth-hero-col">
             <div style={{
               display: 'inline-flex',
               alignItems: 'center',
@@ -715,7 +716,7 @@ function MainPortal() {
               <span>🛡️</span> OFFICIAL GOVERNMENT IT HELPDESK
             </div>
 
-            <h1 style={{
+            <h1 className="auth-hero-title" style={{
               fontSize: '38px',
               fontWeight: '800',
               lineHeight: '1.25',
@@ -807,7 +808,7 @@ function MainPortal() {
           </div>
 
           {/* Right Authentication Card */}
-          <div style={{
+          <div className="auth-card-col" style={{
             backgroundColor: '#FFFFFF',
             color: '#1E293B',
             borderRadius: '20px',
@@ -1215,7 +1216,7 @@ function MainPortal() {
         </main>
 
         {/* Official Footer */}
-        <footer style={{
+        <footer className="auth-footer" style={{
           borderTop: '1px solid rgba(255, 255, 255, 0.08)',
           padding: '16px 36px',
           textAlign: 'center',
@@ -1230,7 +1231,7 @@ function MainPortal() {
   }
 
   return (
-    <div style={{ display: 'flex', minHeight: '100vh', backgroundColor: '#F4F6F9', fontFamily: 'Segoe UI, Tahoma, Geneva, Verdana, sans-serif', position: 'relative' }}>
+    <div className="dash-container" style={{ minHeight: '100vh', backgroundColor: '#F4F6F9', fontFamily: 'Segoe UI, Tahoma, Geneva, Verdana, sans-serif', position: 'relative' }}>
       
       {/* Dynamic Print Styles for Single Ticket and Bulk Reports */}
       <style>{`
@@ -1335,29 +1336,105 @@ function MainPortal() {
           transform: 'translate(-50%, -50%)',
           backgroundColor: '#DC2626',
           color: 'white',
-          padding: '30px 40px',
+          padding: '24px 20px',
           borderRadius: '16px',
           boxShadow: '0 20px 50px rgba(0,0,0,0.5)',
           zIndex: 9999,
           textAlign: 'center',
           animation: 'popInBounce 0.5s ease-out forwards',
-          minWidth: '380px',
+          width: '90%',
+          maxWidth: '420px',
           border: '4px solid #FEF08A'
         }}>
           <div style={{ fontSize: '40px', marginBottom: '10px' }}>🔔</div>
-          <h2 style={{ margin: 0, fontSize: '26px', letterSpacing: '1px' }}>NEW TICKET RECEIVED!</h2>
-          <div style={{ fontSize: '22px', fontWeight: 'bold', marginTop: '10px', color: '#FEF08A' }}>
+          <h2 style={{ margin: 0, fontSize: '24px', letterSpacing: '1px' }}>NEW TICKET RECEIVED!</h2>
+          <div style={{ fontSize: '20px', fontWeight: 'bold', marginTop: '10px', color: '#FEF08A' }}>
             {newTicketAlert.ticket_code}
           </div>
-          <p style={{ margin: '10px 0 0 0', fontSize: '16px', opacity: 0.9 }}>
+          <p style={{ margin: '10px 0 0 0', fontSize: '15px', opacity: 0.9 }}>
             Category: {newTicketAlert.category} | Department: {newTicketAlert.department || 'Ministry Office'}
           </p>
         </div>
       )}
 
-      {/* Sidebar - Hidden when activeTab is live_monitor */}
+      {/* Responsive Mobile Sticky Nav Bar - Shown on Screens <= 820px */}
       {activeTab !== 'live_monitor' && (
-        <div className="no-print" style={{ width: '250px', backgroundColor: '#0A2540', color: '#fff', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', padding: '20px 0' }}>
+        <div className="mobile-nav-bar no-print">
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <div style={{ width: '28px', height: '28px', backgroundColor: '#FFC107', borderRadius: '6px', color: '#000', fontWeight: 'bold', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '12px' }}>MF</div>
+              <span style={{ fontWeight: 'bold', fontSize: '13px', color: '#FCD34D' }}>MFAOR IT Portal</span>
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <span style={{ fontSize: '11px', color: '#CBD5E1' }}>{user.full_name?.split(' ')[0]} ({user.role})</span>
+              <button
+                onClick={handleLogout}
+                style={{
+                  backgroundColor: '#DC2626',
+                  color: '#fff',
+                  border: 'none',
+                  padding: '4px 8px',
+                  borderRadius: '4px',
+                  fontSize: '11px',
+                  fontWeight: 'bold',
+                  cursor: 'pointer'
+                }}
+              >
+                Logout
+              </button>
+            </div>
+          </div>
+          <div className="mobile-nav-scroll">
+            {user.role === 'Staff' ? (
+              <>
+                <button 
+                  onClick={() => navigate('/staff/my-complaints')} 
+                  className={`mobile-nav-tab ${activeTab === 'my_complaints' ? 'active' : ''}`}
+                >
+                  📋 My Inquiries
+                </button>
+                <button 
+                  onClick={() => navigate('/staff/submit-ticket')} 
+                  className={`mobile-nav-tab ${activeTab === 'submit_ticket' ? 'active' : ''}`}
+                >
+                  ➕ Submit Ticket
+                </button>
+              </>
+            ) : (
+              <>
+                <button 
+                  onClick={() => navigate('/admin/complaints')} 
+                  className={`mobile-nav-tab ${activeTab === 'all_complaints' ? 'active' : ''}`}
+                >
+                  📋 Complaints
+                </button>
+                <button 
+                  onClick={() => navigate('/admin/reports')} 
+                  className={`mobile-nav-tab ${activeTab === 'reports' ? 'active' : ''}`}
+                >
+                  📊 Reports
+                </button>
+                <button 
+                  onClick={() => navigate('/admin/dashboard')} 
+                  className={`mobile-nav-tab ${activeTab === 'dashboard' ? 'active' : ''}`}
+                >
+                  📈 Dashboard
+                </button>
+                <button 
+                  onClick={() => navigate('/admin/live-monitor')} 
+                  className={`mobile-nav-tab ${activeTab === 'live_monitor' ? 'active' : ''}`}
+                >
+                  📺 Live Monitor
+                </button>
+              </>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* Desktop Sidebar - Hidden on Mobile and in live_monitor */}
+      {activeTab !== 'live_monitor' && (
+        <div className="dash-sidebar no-print">
           <div>
             <div style={{ padding: '0 20px 20px 20px', borderBottom: '1px solid #1E3A5F', display: 'flex', alignItems: 'center', gap: '12px' }}>
               <div style={{ width: '40px', height: '40px', backgroundColor: '#FFC107', borderRadius: '8px', color: '#000', fontWeight: 'bold', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>MF</div>
@@ -1392,12 +1469,12 @@ function MainPortal() {
       )}
 
       {/* Main Content Area */}
-      <div style={{ flex: 1, padding: '30px' }}>
+      <div className="dash-content">
         
         {/* Top Header Controls */}
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '25px' }}>
+        <div className="dash-topbar">
           <div>
-            <h2 style={{ margin: 0, color: '#0A2540', fontSize: activeTab === 'live_monitor' ? '28px' : '24px' }}>
+            <h2 style={{ margin: 0, color: '#0A2540', fontSize: activeTab === 'live_monitor' ? '28px' : '22px' }}>
               {user.role === 'Admin' 
                 ? (activeTab === 'reports' ? 'MFAOR IT - System Reports' : activeTab === 'dashboard' ? 'MFAOR IT - Executive Dashboard' : activeTab === 'live_monitor' ? 'MFAOR IT - Executive Dashboard' : 'MFAOR IT - All Inquiry Complaints') 
                 : 'MFAR IT - My Inquiries'}
@@ -1406,7 +1483,7 @@ function MainPortal() {
               {user.role === 'Admin' ? 'Live ticket analytics and management system' : 'Submit tickets and track the status of your complaints'}
             </span>
           </div>
-          <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+          <div className="dash-topbar-actions" style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
             {activeTab === 'live_monitor' && (
               <button 
                 onClick={() => navigate('/admin/complaints')} 
@@ -1478,20 +1555,20 @@ function MainPortal() {
 
         {/* Analytics Cards View (Shown for Dashboard, Reports, and Live Monitor) */}
         {(activeTab === 'dashboard' || activeTab === 'reports' || activeTab === 'live_monitor') && (
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '20px', marginBottom: '30px', marginTop: activeTab === 'live_monitor' ? '20px' : '0' }}>
-            <div style={{ backgroundColor: '#2563EB', color: '#fff', padding: activeTab === 'live_monitor' ? '45px 30px' : '20px', borderRadius: '12px', boxShadow: '0 4px 12px rgba(0,0,0,0.08)' }}>
+          <div className="dash-kpi-grid">
+            <div className="dash-kpi-card" style={{ backgroundColor: '#2563EB' }}>
               <span style={{ fontSize: activeTab === 'live_monitor' ? '18px' : '12px', opacity: 0.9 }}>{user.role === 'Admin' ? 'Open Tickets' : 'Total Submitted'}</span>
               <h1 style={{ margin: '12px 0 0 0', fontSize: activeTab === 'live_monitor' ? '56px' : '32px', fontWeight: 'bold' }}>{user.role === 'Admin' ? pendingCount : totalSubmitted}</h1>
             </div>
-            <div style={{ backgroundColor: '#D97706', color: '#fff', padding: activeTab === 'live_monitor' ? '45px 30px' : '20px', borderRadius: '12px', boxShadow: '0 4px 12px rgba(0,0,0,0.08)' }}>
+            <div className="dash-kpi-card" style={{ backgroundColor: '#D97706' }}>
               <span style={{ fontSize: activeTab === 'live_monitor' ? '18px' : '12px', opacity: 0.9 }}>In Progress</span>
               <h1 style={{ margin: '12px 0 0 0', fontSize: activeTab === 'live_monitor' ? '56px' : '32px', fontWeight: 'bold' }}>{inProgressCount}</h1>
             </div>
-            <div style={{ backgroundColor: '#16A34A', color: '#fff', padding: activeTab === 'live_monitor' ? '45px 30px' : '20px', borderRadius: '12px', boxShadow: '0 4px 12px rgba(0,0,0,0.08)' }}>
+            <div className="dash-kpi-card" style={{ backgroundColor: '#16A34A' }}>
               <span style={{ fontSize: activeTab === 'live_monitor' ? '18px' : '12px', opacity: 0.9 }}>{user.role === 'Admin' ? 'Closed / Resolved' : 'Resolved'}</span>
               <h1 style={{ margin: '12px 0 0 0', fontSize: activeTab === 'live_monitor' ? '56px' : '32px', fontWeight: 'bold' }}>{resolvedCount}</h1>
             </div>
-            <div style={{ backgroundColor: '#1E40AF', color: '#fff', padding: activeTab === 'live_monitor' ? '45px 30px' : '20px', borderRadius: '12px', boxShadow: '0 4px 12px rgba(0,0,0,0.08)' }}>
+            <div className="dash-kpi-card" style={{ backgroundColor: '#1E40AF' }}>
               <span style={{ fontSize: activeTab === 'live_monitor' ? '18px' : '12px', opacity: 0.9 }}>Completion Rate %</span>
               <h1 style={{ margin: '12px 0 0 0', fontSize: activeTab === 'live_monitor' ? '56px' : '32px', fontWeight: 'bold' }}>{completionRate}%</h1>
             </div>
@@ -1535,7 +1612,7 @@ function MainPortal() {
 
         {/* New Ticket Submission Form View */}
         {user.role === 'Staff' && activeTab === 'submit_ticket' && (
-          <div style={{ backgroundColor: '#fff', padding: '25px', borderRadius: '12px', boxShadow: '0 2px 8px rgba(0,0,0,0.05)', maxWidth: '600px', marginBottom: '30px' }}>
+          <div className="submit-form-container" style={{ backgroundColor: '#fff', padding: '25px', borderRadius: '12px', boxShadow: '0 2px 8px rgba(0,0,0,0.05)', maxWidth: '600px', marginBottom: '30px' }}>
             <h3 style={{ marginTop: 0, color: '#0A2540' }}>Submit New Inquiry</h3>
             <form onSubmit={handleSubmitTicket}>
               <div style={{ marginBottom: '15px' }}>
@@ -1588,7 +1665,7 @@ function MainPortal() {
 
         {/* Filter Bar (Visible in All Complaints & Reports Tabs, Hidden in Live Monitor) */}
         {activeTab !== 'submit_ticket' && activeTab !== 'live_monitor' && (
-          <div className="no-print" style={{ backgroundColor: '#fff', padding: '15px 20px', borderRadius: '12px', boxShadow: '0 2px 8px rgba(0,0,0,0.05)', marginBottom: '20px', display: 'flex', gap: '15px', flexWrap: 'wrap', alignItems: 'center' }}>
+          <div className="filter-bar-container no-print">
             <input 
               type="text" 
               placeholder="Search Code, Description, User..." 
@@ -1639,6 +1716,7 @@ function MainPortal() {
             <h3 style={{ marginTop: 0, marginBottom: '20px', color: '#0A2540' }}>
               {activeTab === 'reports' ? 'Detailed System Inquiry Report' : user.role === 'Admin' ? 'All Complaints List' : 'My Complaint History'}
             </h3>
+            <div className="table-responsive-container">
             <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '14px' }}>
               <thead>
                 <tr style={{ borderBottom: '2px solid #EDF2F7', color: '#718096', height: '40px' }}>
@@ -1796,13 +1874,14 @@ function MainPortal() {
                 )}
               </tbody>
             </table>
+            </div>
           </div>
         )}
 
         {/* View Details Modal */}
         {selectedTicket && (
-          <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.5)', display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: 1000 }}>
-            <div style={{ backgroundColor: '#fff', padding: '25px', borderRadius: '12px', width: '500px', maxHeight: '80vh', overflowY: 'auto' }}>
+          <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.5)', display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: 1000, padding: '16px' }}>
+            <div className="modal-responsive-card">
               <h3 style={{ marginTop: 0, borderBottom: '1px solid #ddd', paddingBottom: '10px' }}>Ticket Details ({selectedTicket.ticket_code})</h3>
               <p><strong>Category:</strong> {selectedTicket.category}</p>
               <p><strong>Department / Division:</strong> {selectedTicket.department || 'Ministry Office'}</p>
