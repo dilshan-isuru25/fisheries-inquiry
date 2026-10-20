@@ -92,6 +92,11 @@ DB_CONFIG = {
     'database': os.getenv("DB_NAME", "it_complaint_db")
 }
 
+# Automatically enable SSL for TiDB Cloud or Cloud MySQL providers
+db_host_lower = os.getenv("DB_HOST", "localhost").lower()
+if os.getenv("DB_SSL", "").lower() in ("true", "1") or int(os.getenv("DB_PORT", "3306")) == 4000 or "tidbcloud" in db_host_lower:
+    DB_CONFIG['ssl_verify_cert'] = False
+
 # 2. FastAPI Application Initialization
 app = FastAPI(
     title="Ministry IT Complaint API",
