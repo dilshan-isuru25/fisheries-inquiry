@@ -1,0 +1,15 @@
+.env
+*.bak
+*.class
+__pycache__/
+*.py[cod]
+
+# Frontend
+frontend/node_modules/
+frontend/build/
+.npm
+.eslintcache
+
+# Uploads (keep directory, exclude files)
+uploads/*
+!uploads/.gitkeep
